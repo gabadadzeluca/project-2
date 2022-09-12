@@ -6,15 +6,18 @@
         {% for listing in listings%}
         <div class="box">
             <a href="{% url 'listing' listing.id %}">
-                <div>{{listing.title}}</div>
+                <div><h4>{{listing.title}}</h4></div>
                 <div>Starting Bid: {{listing.price}} $</div>
                 {% if listing.image %}
                     <div><img src="{{listing.image}}" alt="{{listing.title}}" class="img-listing-page"></div>
+                {% else %}
+                    <div><img src="https://www.cort.com/assets/images/no-image.png" alt="img not found" class="img-listing-page"></div>
                 {% endif %}
                 <div>Author: {{listing.user}}</div>
                 </div><br>
-                {% endfor %}
             </a>
+        {% endfor %}
+            
 
     </ul>
         

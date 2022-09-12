@@ -5,12 +5,13 @@ body {
 }
 
 .box{
-    background-color: rgb(210, 227, 231);
+    background-color: rgb(242, 245, 246);
     width:400px;
     font-size: larger;
     font-weight: 400;
     padding: 20px;
     margin: 40px;
+    border: 2px solid rgb(108, 108, 108);
     a, a:hover{
         text-decoration: none;
         color:rgb(0, 0, 0);
@@ -37,26 +38,33 @@ form{
 
 .img-listing-page{
     width:200px;
+    margin: 10px 0 10px 0;
 }
 
 .img-full-page{
     width:400px;
+    margin: 40px 0 40px 0;
 }
 
 .comments{
-    margin: 40px 0 40px 0;
-    border: 1px solid grey;
-    background-color: rgb(235, 235, 235);
-    font-weight: 500;
+    border-radius: 10px;
+    padding: 10px;
+    background-color:#f2ebeb;
+    margin: 80px 0 80px 0;
+    width: 80%;
 }
 
-.bids{
-    margin: 40px 0 40px 0;
-    border: 1px solid gray;
-    background-color: azure;
-    font-weight: 400;
-}
-
-.comments, .bids{
-    width:80%;
+.comment-form{
+    margin: 100px 0 50px 0;
+    input{
+        background-color: #24a0ed;
+        color: white;
+        font-weight: 400;
+        font-size: 16px;
+        border: 2px solid rgb(179, 171, 171);
+        border-radius: 5px;
+    }
+    textarea{
+        border-radius: 5px;
+    }
 }

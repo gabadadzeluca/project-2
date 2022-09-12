@@ -1,62 +1,44 @@
 {% extends "auctions/layout.html" %}
 
 {% block title %}
-    {{listing}}
+    {{listing.title}}
 {% endblock%}
 
 {% block body %}
-    
-    {% for item in listing_list %}
-        {% if item.id == id %}
-        <div>
-
-            <div>Item: {{item.title}}</div>
-            {% if item.image %}
-                <div><img src="{{item.image}}" alt="{{item.title}}" class="img-full-page"></div>
-            {%endif%}
-
-            <div>Description: {{item.content}}</div>
-            <div>Current Bid: {{item.price}} $</div>
-            <div>Posted by: {{item.user}}</div>
-
-        </div>    
-        
-        
-        <form action="{% url 'listing' item.id %}" method="post">
-            {% csrf_token %}
-            {{comment_form}}
-            {% if comment_form %}
-            <input type="submit" Value="Comment">
-            {% endif %}
-        </form>
-        <div class="comments">
-            <h3>Comments:</h3>
-                {% for comment in comment_list %}
-                    {% if comment.post == item %}
-                        <div><b>{{comment.user}}:</b></div>
-                        <div> {{comment.comment}} </div>
-                    {% endif %}
-                {% endfor %}
-        </div>
-        <form action="" method="POST">
-            {% csrf_token %}
-            {{form_bid}}
-            <input type="submit" value="Bid">
-        </form>
-        <div class="bids">
-            <h3> BIDS: </h3>
-            {% for bid in bid_list %}
-                {% if bid.post == item %}
-                    {% if bid.bid >= item.price %}
-                        <div><b>{{bid.user}}</b> has bid</div>
-                        <div> {{bid.bid}} $</div>
-                        <br>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        </div>
-        
-
+    <div>
+        <div><h4>Item: {{listing.title}}</h4></div>
+        <div>Description: {{listing.content}}</div>
+        {% if listing.image %}
+            <div><img src="{{listing.image}}" alt="{{listing.title}}" class="img-full-page"></div>
+        {% else %}
+            <div><img src="https://www.cort.com/assets/images/no-image.png" alt="img not found" class="img-full-page"></div>
         {% endif %}
-    {% endfor %}
+        <div>Starting Bid: <b>{{listing.price}} $</b></div>
+        <div>posted by: <b>{{listing.user}}</b></div>
+    </div>
+    
+    <div class="comments">
+        <h4>Comments ({{comments.count}})</h4>
+        {% for comment in comments %}
+            <div><b>{{comment.user}}:</b></div>    
+            <div>{{comment.comment}}</div>   
+        {% endfor %}
+    </div>
+
+    {% if comment_form %}
+    <div class="comment-form">
+        <form action="" method="POST">{% csrf_token %}
+            {{comment_form}}
+            <input type="submit" value="Add Comment">
+        </form>
+    </div>
+    {% else %}
+        <br>
+        <div>
+            <div> <h6>Log in to write a comment.</h6></div>
+            <div>Not Registered Yet? <a href="{%url 'register' %}">Click Here</a></div>
+        </div>
+    {% endif %}
+
+    
 {% endblock %}

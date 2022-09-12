@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from datetime import datetime
 
 class User(AbstractUser):
     pass
@@ -12,6 +12,8 @@ class Listing(models.Model):
     image = models.CharField(blank=True, max_length=400)
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=None)
     price = models.IntegerField('Price')
+    time = models.TimeField(default= datetime.now())
+    active = models.BooleanField(default=True)
     # ADD INVISIBLE ACTIVE FIELD TO KNOW IF THE LISTING IS ACTIVE 
     def __str__(self):
         return f"{self.title} | Posted by: {self.user}" 
@@ -27,27 +29,23 @@ class Comments(models.Model):
     comment = models.TextField('Comment', max_length=400)
     
     def __str__(self):
-        return f"{self.user}:  {self.comment}"
+        return f"{self.user} commented on {self.post.title}"
 
     class Meta:
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
 
-
+"""
 class Bids(models.Model):
     post = models.ForeignKey(Listing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     bid = models.IntegerField()
     #starting_bid = models.ForeignKey(Listing, on_delete=models.CASCADE)
     #CHECK BID
-    """def checkbid(self,bid):
-        self.bid = bid
-        self.final_bid = Bids.final_bid
-        if self.bid < self.final_bid:
-            return False
-    """
+    
     class Meta:
         verbose_name = "Bid"
         verbose_name_plural = "Bids"
     def __str__(self):
         return f"{self.user} has put a {self.bid}$ bid for {self.post.title}"
+"""
