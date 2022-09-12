@@ -87,13 +87,20 @@ def create(request):
 def listing(request, id):
     comment_list = Comments.objects.all()
     listing_list = Listing.objects.all()
-    #bid_list = Bids.objects.all()
+    bid_list = Bids.objects.all()
     if request.user.is_authenticated:
 
         if request.method == "POST":
             comment_form = CommentForm(request.POST)
-            if comment_form.is_valid():
+            form_bid = Bidform(request.POST)
+            if form_bid.is_valid():
                 post = get_object_or_404(Listing, pk = id)
+                form_bid.instance.user = request.user
+                form_bid.instance.post = post
+                form_bid.save()
+           
+            if comment_form.is_valid():
+                post = get_object_or_404(Listing, pk=id)
                 comment_form.instance.user = request.user
                 comment_form.instance.post = post
                 comment_form.save()
@@ -104,6 +111,9 @@ def listing(request, id):
             "id": id,
             "comment_form" : CommentForm(),
             "comment_list": comment_list,
+            "form_bid": Bidform(),
+            "bid_list": bid_list,
+            
 
         })
     else:

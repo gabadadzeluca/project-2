@@ -38,7 +38,7 @@ class Bids(models.Model):
     post = models.ForeignKey(Listing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     bid = models.IntegerField()
-    #final_bid = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    #starting_bid = models.ForeignKey(Listing, on_delete=models.CASCADE)
     #CHECK BID
     """def checkbid(self,bid):
         self.bid = bid
@@ -50,4 +50,4 @@ class Bids(models.Model):
         verbose_name = "Bid"
         verbose_name_plural = "Bids"
     def __str__(self):
-        return f"{self.user} has put a {self.bid}$ bid"
+        return f"{self.user} has put a {self.bid}$ bid for {self.post.title}"
