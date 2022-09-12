@@ -1,0 +1,48 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    {{listing}}
+{% endblock%}
+
+{% block body %}
+    
+    {% for item in listing_list %}
+        {% if item.id == id %}
+        <div>
+
+            <div>Item: {{item.title}}</div>
+            {% if item.image %}
+                <div><img src="{{item.image}}" alt="{{item.title}}" class="img-full-page"></div>
+            {%endif%}
+
+            <div>Description: {{item.content}}</div>
+            <div>Current Bid: {{item.price}} $</div>
+            <div>Posted by: {{item.user}}</div>
+
+        </div>    
+        
+        
+        <form action="{% url 'listing' item.id %}" method="post">
+            {% csrf_token %}
+            {{comment_form}}
+            {% if comment_form %}
+            <input type="submit" Value="Comment">
+            {% endif %}
+        </form>
+        <h3>Comments:</h3>
+            {% for comment in comment_list %}
+                {% if comment.post == item %}
+                    <div><b>{{comment.user}}:</b></div>
+                    <div> {{comment.comment}} </div>
+                {% endif %}
+            {% endfor %}
+        
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form_bid}}
+        </form>
+
+
+        {% endif %}
+    {% endfor %}
+{% endblock %}
