@@ -98,7 +98,8 @@ def listing(request, id):
                 form_bid.instance.user = request.user
                 form_bid.instance.post = post
                 form_bid.save()
-           
+                
+    
             if comment_form.is_valid():
                 post = get_object_or_404(Listing, pk=id)
                 comment_form.instance.user = request.user
@@ -113,7 +114,7 @@ def listing(request, id):
             "comment_list": comment_list,
             "form_bid": Bidform(),
             "bid_list": bid_list,
-            
+
 
         })
     else:

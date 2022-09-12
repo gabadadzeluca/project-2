@@ -29,26 +29,33 @@
             <input type="submit" Value="Comment">
             {% endif %}
         </form>
-        <h3>Comments:</h3>
-            {% for comment in comment_list %}
-                {% if comment.post == item %}
-                    <div><b>{{comment.user}}:</b></div>
-                    <div> {{comment.comment}} </div>
-                {% endif %}
-            {% endfor %}
-        
+        <div class="comments">
+            <h3>Comments:</h3>
+                {% for comment in comment_list %}
+                    {% if comment.post == item %}
+                        <div><b>{{comment.user}}:</b></div>
+                        <div> {{comment.comment}} </div>
+                    {% endif %}
+                {% endfor %}
+        </div>
         <form action="" method="POST">
             {% csrf_token %}
             {{form_bid}}
             <input type="submit" value="Bid">
         </form>
-        <h3> BIDS: </h3>
+        <div class="bids">
+            <h3> BIDS: </h3>
             {% for bid in bid_list %}
                 {% if bid.post == item %}
-                    <div><b>{{bid.user}}</b> has bid</div>
-                    <div> {{bid.bid}} $</div>
+                    {% if bid.bid >= item.price %}
+                        <div><b>{{bid.user}}</b> has bid</div>
+                        <div> {{bid.bid}} $</div>
+                        <br>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
+        </div>
+        
 
         {% endif %}
     {% endfor %}

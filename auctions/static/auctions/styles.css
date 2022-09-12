@@ -39,4 +39,22 @@ form textarea {
 
 .img-full-page {
   width: 400px;
+}
+
+.comments {
+  margin: 40px 0 40px 0;
+  border: 1px solid grey;
+  background-color: rgb(235, 235, 235);
+  font-weight: 500;
+}
+
+.bids {
+  margin: 40px 0 40px 0;
+  border: 1px solid gray;
+  background-color: azure;
+  font-weight: 400;
+}
+
+.comments, .bids {
+  width: 80%;
 }/*# sourceMappingURL=styles.css.map */
