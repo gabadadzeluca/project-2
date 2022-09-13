@@ -19,27 +19,31 @@
     </div>
     
 
-    <div class="bids">
-        <div class="current-bid">
-            <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
-            <div>Current winner: {{active_bid.user}}</div>
-
-        </div>
-
-        <h4>Bids:</h4>
-        {% for bid in bids %}
-            <div>
-                <div>{{ bid.user }}</div>
-                <div>{{ bid.bid }}$</div>
-            </div>
-        {% endfor %}
+    {% if message %}
+        <div class="alert alert-danger" style="width: 80%;">{{message}}</div>
+    {% endif %}
 
         <div class="bid-form">
             <form action="" method="POST">{% csrf_token %}
                 {{bid_form}}
-                <input type="submit" value="Bid">
+                <input type="submit" value="Bid" class="btn btn-primary">
             </form>
         </div>
+    
+        <div class="bids">
+            <div class="current-bid">
+                <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
+                <div>Current winner: {{active_bid.user}}</div>
+            </div>
+
+        <h4>Bids:</h4>
+        {% for bid in bids %}
+            <div>
+                <span class="time-stamp"> {{bid.time}}</span>
+                <div>{{ bid.user }}</div>
+                <div>{{ bid.bid }}$</div>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="comments">
@@ -54,7 +58,7 @@
     <div class="comment-form">
         <form action="" method="POST">{% csrf_token %}
             {{comment_form}}
-            <input type="submit" value="Add Comment">
+            <input type="submit" value="Add Comment" class="btn btn-primary">
         </form>
     </div>
     {% else %}

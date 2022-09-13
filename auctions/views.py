@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -100,16 +101,10 @@ def listing(request, listing_id):
     listing = Listing.objects.get(id = listing_id)
     bids = Bids.objects.filter(post = listing).order_by('-bid')
     comments = Comments.objects.filter(post = listing)
-    
-    # CHECK IF BID IS VALID AND APEND THE BID LIST
-    bid_list=[]
-    for bid in bids:
-        if bid.bid > listing.price:
-            bid_list.append(bid)
-    #BIGGEST BID SO FAR
-    active_bid = bid_list[0]
+    invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
 
-    
+
+  
     if request.user.is_authenticated:
         
         if request.method == "POST":  
@@ -118,15 +113,28 @@ def listing(request, listing_id):
             comment_form = CommentForm(request.POST)     
             bid_form = Bidform(request.POST)
             
-            
             if bid_form.is_valid():
-                # ADD BID VALDIATION HERE, CHANGE THE CODE YOU IMPLEMENTED
-                instance = bid_form.save(commit=False)
-                instance.user = request.user
-                instance.post = listing
-                instance.save()
-                return HttpResponseRedirect(reverse('index'))
+                try:
 
+                    instance = bid_form.save(commit=False)
+                    instance.user = request.user
+                    if instance.bid < listing.price:
+                        raise ValidationError("Price isn't valid")
+                    instance.post = listing
+                    instance.save()
+                    print(instance.bid)
+                    
+                    return HttpResponseRedirect(reverse('index'))
+                except ValidationError:
+                    return render(request, "auctions/listing.html", {
+                        "message": invalid_bid_message,
+                        "listing": listing,
+                        "comment_form":CommentForm(),
+                        "comments": comments,
+                        "bids": bids,
+                        "bid_form": Bidform(),
+
+                    })
 
             if comment_form.is_valid(): 
                 instance = comment_form.save(commit=False)
@@ -136,20 +144,17 @@ def listing(request, listing_id):
                 return HttpResponseRedirect(reverse('index'))
 
         return render(request, "auctions/listing.html",{
-        "id":listing_id,
         "listing": listing,
         "comment_form":CommentForm(),
         "comments": comments,
-        "bids": bid_list,
-        #"bids": bids,
+        "bids": bids,
         "bid_form": Bidform(),
-        "active_bid": active_bid
+        #"active_bid": active_bid
         
     })
 
     else: #if user's not logged in
         return render(request, "auctions/listing.html",{
-            "id":listing_id,
             "listing": listing,
             "comments": comments,
             "bids": bids,

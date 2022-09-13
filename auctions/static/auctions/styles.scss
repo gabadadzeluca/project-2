@@ -48,6 +48,14 @@ form{
     margin: 40px 0 40px 0;
 }
 
+
+.time-stamp{
+        font-size: small;
+        opacity: 60%;
+        color:dimgrey;
+}
+
+
 .item-listing{
     margin: 60px 0 50px 0;
     font-weight: 400;
@@ -84,22 +92,36 @@ form{
     }
 }
 
-.time-stamp{
-        font-size: small;
-        opacity: 60%;
-        color:dimgrey;
-    }
-
 
 .bids{
 
-
+    
     .current-bid{
+        padding: 10px;
         font-size: 24px;
         font-weight: 300;
         background-color: ghostwhite;
+        border-radius: 5px;
         border: 1px solid black;
         margin: 50px 0 200px 0;
+        width: 80%;
     }
     
+}
+
+.bid-form{
+    font-size: 20px;
+    font-weight: 400;
+    margin: 50px 0 100px 0; 
+    padding: 10px;    
+    input{
+        height: 40px;
+        border: 1px solid rgb(185, 185, 185);
+        border-radius: 5px;
+        width: 80px;
+    }
+    input[type="submit"]{
+        margin-bottom: 5px;
+        width:auto;
+    }
 }
