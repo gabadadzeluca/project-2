@@ -7,6 +7,7 @@
 {% block body %}
     <div class="item-listing">
         <div><h4>Item: {{listing.title}}</h4></div>
+        <div>Category: <a href="">{{category}}</a></div>
         <div>Description: {{listing.content}}</div>
         {% if listing.image %}
             <div><img src="{{listing.image}}" alt="{{listing.title}}" class="img-full-page"></div>

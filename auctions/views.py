@@ -112,12 +112,13 @@ def listing(request, listing_id):
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
 
 
-  
+    print("bids: ", bids) #test
     if request.user.is_authenticated:
         if request.user == listing.user:
 
             # add ability to close the listing
             print(listing.active)
+            print(listing.category.lower().title())
 
         if (request.method == "POST" and listing.active is True):  
             
@@ -145,6 +146,8 @@ def listing(request, listing_id):
                         "comments": comments,
                         "bids": bids,
                         "bid_form": Bidform(),
+                        "category": listing.category.lower().title(),
+
 
                     })
 
@@ -162,7 +165,10 @@ def listing(request, listing_id):
         "comments": comments,
         "bids": bids,
         "bid_form": Bidform(),
+        "category": listing.category.lower().title(),
+
         #"active_bid": active_bid
+        
         
     })
 
@@ -171,4 +177,15 @@ def listing(request, listing_id):
             "listing": listing,
             "comments": comments,
             "bids": bids,
+            "category": listing.category.lower().title(),
+
         })
+
+
+def categories(request):
+    categories = Listing.objects.values('category').distinct().order_by('category')
+    print(categories)
+    return render(request, "auctions/categories.html",{
+        "categories": categories,
+
+    })
