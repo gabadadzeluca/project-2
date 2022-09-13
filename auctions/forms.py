@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Textarea, TextInput, IntegerField
 from django import forms
-from .models import Listing, User, Comments
+from .models import Listing, User, Comments, Bids
 
 
 class ListingForm(ModelForm):
@@ -20,9 +20,9 @@ class CommentForm(ModelForm):
         fields = ['comment']
 
 
-"""class Bidform(ModelForm):
+class Bidform(ModelForm):
     bid = forms.IntegerField()
 
     class Meta:
         model = Bids
-        fields = ['bid']"""
+        fields = ['bid']

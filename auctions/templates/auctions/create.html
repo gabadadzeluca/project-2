@@ -2,6 +2,9 @@
 {%block title %}
 {% endblock %}
 {% block body %}
+    {% if message %}
+        <div class="alert alert-danger">{{message}}</div>
+    {% endif %}
     <form action="" method="post">
         {% csrf_token %}
         {{form}}

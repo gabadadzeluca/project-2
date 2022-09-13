@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from datetime import datetime
-
+from django.core.exceptions import ValidationError
 class User(AbstractUser):
     pass
 
@@ -11,8 +10,8 @@ class Listing(models.Model):
     content = models.TextField('Content',max_length=500)
     image = models.CharField(blank=True, max_length=400)
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=None)
-    price = models.IntegerField('Price')
-    time = models.TimeField(default= datetime.now())
+    price = models.PositiveIntegerField('Price')
+    time = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
     # ADD INVISIBLE ACTIVE FIELD TO KNOW IF THE LISTING IS ACTIVE 
     def __str__(self):
@@ -27,6 +26,8 @@ class Comments(models.Model):
     post = models.ForeignKey(Listing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     comment = models.TextField('Comment', max_length=400)
+    time = models.DateTimeField(auto_now=True)
+
     
     def __str__(self):
         return f"{self.user} commented on {self.post.title}"
@@ -35,17 +36,18 @@ class Comments(models.Model):
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
 
-"""
 class Bids(models.Model):
     post = models.ForeignKey(Listing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    bid = models.IntegerField()
-    #starting_bid = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    #CHECK BID
+    bid = models.PositiveIntegerField(default=None,)
+    time = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = "Bid"
         verbose_name_plural = "Bids"
+
     def __str__(self):
         return f"{self.user} has put a {self.bid}$ bid for {self.post.title}"
-"""
+
+
+    

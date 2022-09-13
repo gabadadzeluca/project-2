@@ -1,4 +1,3 @@
-from turtle import title
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,8 +5,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comments
-from .forms import ListingForm, CommentForm
+from .models import User, Listing, Comments, Bids
+from .forms import ListingForm, CommentForm, Bidform
 
 
 
@@ -73,46 +72,85 @@ def register(request):
 
 @login_required
 def create(request):
-    if request.method == "POST":
-        form = ListingForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.user = request.user
-            instance.save()
+    invalid_price_message = "Invalid Price"
+    success_message = "Successfully Posted Listing"
+    try:
+        if request.method == "POST":
+            form = ListingForm(request.POST)
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.user = request.user
+                instance.save()
 
-            return HttpResponseRedirect(reverse('index'))
-    return render(request, "auctions/create.html",{
-        "form":ListingForm()
-    })
+                return HttpResponseRedirect(reverse('index'))
+        return render(request, "auctions/create.html",{
+            "form":ListingForm()
+        })
+    except IntegrityError:
+        return render(request, "auctions/create.html",{
+            "form":ListingForm(),
+            "message": invalid_price_message
+        })
+
 
 
 
 def listing(request, listing_id):
     
     listing = Listing.objects.get(id = listing_id)
-    print(listing)
+    bids = Bids.objects.filter(post = listing).order_by('-bid')
     comments = Comments.objects.filter(post = listing)
+    
+    # CHECK IF BID IS VALID AND APEND THE BID LIST
+    bid_list=[]
+    for bid in bids:
+        if bid.bid > listing.price:
+            bid_list.append(bid)
+    #BIGGEST BID SO FAR
+    active_bid = bid_list[0]
+
+    
     if request.user.is_authenticated:
         
         if request.method == "POST":  
+            
+            #comment form and bidding form
             comment_form = CommentForm(request.POST)     
-           
+            bid_form = Bidform(request.POST)
+            
+            
+            if bid_form.is_valid():
+                # ADD BID VALDIATION HERE, CHANGE THE CODE YOU IMPLEMENTED
+                instance = bid_form.save(commit=False)
+                instance.user = request.user
+                instance.post = listing
+                instance.save()
+                return HttpResponseRedirect(reverse('index'))
+
+
             if comment_form.is_valid(): 
                 instance = comment_form.save(commit=False)
                 instance.user = request.user
                 instance.post = listing
                 instance.save()
                 return HttpResponseRedirect(reverse('index'))
+
         return render(request, "auctions/listing.html",{
         "id":listing_id,
         "listing": listing,
         "comment_form":CommentForm(),
-        "comments": comments
+        "comments": comments,
+        "bids": bid_list,
+        #"bids": bids,
+        "bid_form": Bidform(),
+        "active_bid": active_bid
+        
     })
-    else:
+
+    else: #if user's not logged in
         return render(request, "auctions/listing.html",{
             "id":listing_id,
             "listing": listing,
             "comments": comments,
-            
+            "bids": bids,
         })
