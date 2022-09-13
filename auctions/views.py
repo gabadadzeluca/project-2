@@ -12,9 +12,10 @@ from .forms import ListingForm, CommentForm, Bidform
 
 
 def index(request):
-    listing_list = Listing.objects.order_by('-pk')
+    listings = Listing.objects.order_by('-pk')
+    print(listings)
     return render(request, "auctions/index.html",{
-        "listings":listing_list,
+        "listings":listings,
 
     })
 
@@ -74,7 +75,6 @@ def register(request):
 @login_required
 def create(request):
     invalid_price_message = "Invalid Price"
-    success_message = "Successfully Posted Listing"
     try:
         if request.method == "POST":
             form = ListingForm(request.POST)
@@ -101,13 +101,18 @@ def listing(request, listing_id):
     listing = Listing.objects.get(id = listing_id)
     bids = Bids.objects.filter(post = listing).order_by('-bid')
     comments = Comments.objects.filter(post = listing)
+    
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
 
 
   
     if request.user.is_authenticated:
-        
-        if request.method == "POST":  
+        if request.user == listing.user:
+
+            # add ability to close the listing
+            print(listing.active)
+
+        if (request.method == "POST" and listing.active is True):  
             
             #comment form and bidding form
             comment_form = CommentForm(request.POST)     

@@ -11,7 +11,7 @@ class Listing(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=None)
     price = models.PositiveIntegerField('Price')
     time = models.DateTimeField(auto_now=True)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField('active',default=True)
     # ADD INVISIBLE ACTIVE FIELD TO KNOW IF THE LISTING IS ACTIVE 
     def __str__(self):
         return f"{self.title} | Posted by: {self.user}" 
