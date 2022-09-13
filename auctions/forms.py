@@ -8,7 +8,7 @@ class ListingForm(ModelForm):
     content = forms.Textarea(attrs={'cols': 40, 'rows': 10})
     image = forms.CharField(required=False)
     price = forms.IntegerField()
-    active = forms.BooleanField()
+    #active = forms.BooleanField()
     class Meta:
         model = Listing
         fields = ["title", "content", "image", "price"]

@@ -10,6 +10,13 @@ from .models import User, Listing, Comments, Bids
 from .forms import ListingForm, CommentForm, Bidform
 
 
+# Incative listings page
+def inactive(request):
+    listings = Listing.objects.order_by('-pk')
+    return render(request, "auctions/inactive.html",{
+        "listings":listings,
+
+    })
 
 def index(request):
     listings = Listing.objects.order_by('-pk')
@@ -148,6 +155,7 @@ def listing(request, listing_id):
                 instance.save()
                 return HttpResponseRedirect(reverse('index'))
 
+        # IF LISTING IS NOT ACTIVE
         return render(request, "auctions/listing.html",{
         "listing": listing,
         "comment_form":CommentForm(),

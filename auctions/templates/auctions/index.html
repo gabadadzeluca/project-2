@@ -1,10 +1,10 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    
+    <div class="active-listings">
     <h2>Active Listings</h2>
 
-        {% for listing in listings%}
+        {% for listing in listings %}
             {% if listing.active %}
         <div class="box">
             <a href="{% url 'listing' listing.id %}">
@@ -20,8 +20,8 @@
             </a>
             {% endif %}
         {% endfor %}
-            
-
-    </ul>
+    </div>     
+    
+ 
         
 {% endblock %}

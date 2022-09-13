@@ -23,19 +23,24 @@
         <div class="alert alert-danger" style="width: 80%;">{{message}}</div>
     {% endif %}
 
+
+        {% if listing.active %}
         <div class="bid-form">
             <form action="" method="POST">{% csrf_token %}
                 {{bid_form}}
                 <input type="submit" value="Bid" class="btn btn-primary">
             </form>
         </div>
-    
+        
         <div class="bids">
             <div class="current-bid">
                 <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
                 <div>Current winner: {{active_bid.user}}</div>
             </div>
 
+        {% else %}
+            {%if winner_bid %}<div>Auction was won by {{winner_bid.user}} for {{winner_bid.bid}}$</div>{% endif %}
+        {% endif %}
         <h4>Bids:</h4>
         {% for bid in bids %}
             <div>
@@ -53,21 +58,22 @@
             <div>{{comment.comment}}</div>   
         {% endfor %}
     </div>
-
-    {% if comment_form %}
-    <div class="comment-form">
-        <form action="" method="POST">{% csrf_token %}
-            {{comment_form}}
-            <input type="submit" value="Add Comment" class="btn btn-primary">
-        </form>
-    </div>
-    {% else %}
-        <br>
-        <div>
-            <div><h6>Log in to write a comment.</h6></div>
-            <div>Not Registered Yet? <a href="{%url 'register' %}">Click Here</a></div>
+    {% if listing.active %}
+        {% if comment_form %}
+        <div class="comment-form">
+            <form action="" method="POST">{% csrf_token %}
+                {{comment_form}}
+                <input type="submit" value="Add Comment" class="btn btn-primary">
+            </form>
         </div>
-    {% endif %}
+        {% else %}
+            <br>
+            <div>
+                <div><h6>Log in to write a comment.</h6></div>
+                <div>Not Registered Yet? <a href="{%url 'register' %}">Click Here</a></div>
+            </div>
+        {% endif %}
+    {%endif%}
 
 
     
