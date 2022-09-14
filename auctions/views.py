@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comments, Bids
+from .models import User, Listing, Comments, Bids, Categories
 from .forms import ListingForm, CommentForm, Bidform
 
 
@@ -20,7 +20,6 @@ def inactive(request):
 
 def index(request):
     listings = Listing.objects.order_by('-pk')
-    print(listings)
     return render(request, "auctions/index.html",{
         "listings":listings,
 
@@ -112,13 +111,14 @@ def listing(request, listing_id):
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
 
 
+
+
     print("bids: ", bids) #test
     if request.user.is_authenticated:
         if request.user == listing.user:
 
             # add ability to close the listing
             print(listing.active)
-            print(listing.category.lower().title())
 
         if (request.method == "POST" and listing.active is True):  
             
@@ -146,7 +146,6 @@ def listing(request, listing_id):
                         "comments": comments,
                         "bids": bids,
                         "bid_form": Bidform(),
-                        "category": listing.category.lower().title(),
 
 
                     })
@@ -165,7 +164,6 @@ def listing(request, listing_id):
         "comments": comments,
         "bids": bids,
         "bid_form": Bidform(),
-        "category": listing.category.lower().title(),
 
         #"active_bid": active_bid
         
@@ -177,15 +175,24 @@ def listing(request, listing_id):
             "listing": listing,
             "comments": comments,
             "bids": bids,
-            "category": listing.category.lower().title(),
+           
 
         })
 
 
 def categories(request):
-    categories = Listing.objects.values('category').distinct().order_by('category')
-    print(categories)
+    categories = Categories.objects.all().distinct().order_by('category')
     return render(request, "auctions/categories.html",{
         "categories": categories,
+
+    })
+
+def category(request, category_id):
+    category = Categories.objects.get(id = category_id)
+    listings = Listing.objects.filter(category = category)
+
+    return render(request, "auctions/category.html", {
+        "category": category,
+        "listings": listings,
 
     })

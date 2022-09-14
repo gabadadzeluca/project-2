@@ -1,7 +1,6 @@
-from random import choices
-from django.forms import ModelForm, Textarea, TextInput, IntegerField
+from django.forms import ModelForm, Textarea, TextInput, IntegerField, CheckboxSelectMultiple
 from django import forms
-from .models import Listing, User, Comments, Bids
+from .models import Listing, User, Comments, Bids, Categories
 
 
 class ListingForm(ModelForm):
@@ -12,14 +11,13 @@ class ListingForm(ModelForm):
 
 
 class CommentForm(ModelForm):
-    #comment = forms.Textarea(attrs={'cols':40, 'rows':10})
+
     class Meta:
         model = Comments
         fields = ['comment']
 
 
 class Bidform(ModelForm):
-    #bid = forms.IntegerField()
 
     class Meta:
         model = Bids
