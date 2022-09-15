@@ -103,7 +103,7 @@ def create(request):
 
 
 def listing(request, listing_id):
-    
+   
     listing = Listing.objects.get(id = listing_id)
     bids = Bids.objects.filter(post = listing).order_by('-bid')
     comments = Comments.objects.filter(post = listing)
@@ -112,24 +112,36 @@ def listing(request, listing_id):
 
     # Variable to access the owner of the listing
     IS_USER = False
-
+    if request.user == listing.user:
+            IS_USER = True
 
     print("bids: ", bids) #test
     if request.user.is_authenticated:
-        if request.user == listing.user:
-            checkbox = request.POST.get("close")
-            if checkbox == "Close":
-                print("CHECKBOX:",checkbox)
-                print("Before: ",listing.active)
-                listing.active = False           
-                print("After: ", listing.active)
-                listing.save()
-                return HttpResponseRedirect(reverse('index'))
-            # add ability to close the listing
-            IS_USER = True
-            print("IS USER: ",IS_USER)
+        #if request.user == listing.user:
+            #IS_USER = True
+        if IS_USER:
+            return render(request, "auctions/listing.html",{
+                    "listing": listing,
+                    "comment_form":CommentForm(),
+                    "comments": comments,
+                    "bids": bids,
+                    "bid_form": Bidform(),
+                    "IS_USER": IS_USER,
+                })
+        checkbox = request.POST.get("close")
+        if checkbox == "Close": 
+            # Ability to close the listing
+            listing.active = False           
+            listing.save()
+            return render(request, "auctions/listing.html",{
+                "listing": listing,
+                "comment_form":CommentForm(),
+                "comments": comments,
+                "bids": bids,
+                "bid_form": Bidform(),
+                
+            })
         if (request.method == "POST" and listing.active is True):  
-            
             #comment form and bidding form
             comment_form = CommentForm(request.POST)     
             bid_form = Bidform(request.POST)

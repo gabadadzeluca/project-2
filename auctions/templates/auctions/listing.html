@@ -38,14 +38,15 @@
                 <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
                 <div>Current winner: {{active_bid.user}}</div>
                 
-                IF USER:
+                {% if IS_USER %}
                 <form action="{% url 'listing' listing.id %}" method="POST">{% csrf_token %}
                     <input type="submit" value="Close" name="close">
                 </form>
+                {% endif %}
             </div>
 
         {% else %}
-            {%if winner_bid %}<div>Auction was won by {{winner_bid.user}} for {{winner_bid.bid}}$</div>{% endif %}
+            <div>Auction was won by {{winner_bid.user}} for {{winner_bid.bid}}$</div>
         {% endif %}
         <h4>Bids:</h4>
         {% for bid in bids %}
