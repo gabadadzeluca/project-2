@@ -37,6 +37,11 @@
             <div class="current-bid">
                 <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
                 <div>Current winner: {{active_bid.user}}</div>
+                
+                IF USER:
+                <form action="{% url 'listing' listing.id %}" method="POST">{% csrf_token %}
+                    <input type="submit" value="Close" name="close">
+                </form>
             </div>
 
         {% else %}

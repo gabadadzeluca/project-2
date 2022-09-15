@@ -110,16 +110,24 @@ def listing(request, listing_id):
     
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
 
-
+    # Variable to access the owner of the listing
+    IS_USER = False
 
 
     print("bids: ", bids) #test
     if request.user.is_authenticated:
         if request.user == listing.user:
-
+            checkbox = request.POST.get("close")
+            if checkbox == "Close":
+                print("CHECKBOX:",checkbox)
+                print("Before: ",listing.active)
+                listing.active = False           
+                print("After: ", listing.active)
+                listing.save()
+                return HttpResponseRedirect(reverse('index'))
             # add ability to close the listing
-            print(listing.active)
-
+            IS_USER = True
+            print("IS USER: ",IS_USER)
         if (request.method == "POST" and listing.active is True):  
             
             #comment form and bidding form
@@ -149,7 +157,7 @@ def listing(request, listing_id):
 
 
                     })
-
+            # IF FORM'S VALID
             if comment_form.is_valid(): 
                 instance = comment_form.save(commit=False)
                 instance.user = request.user
