@@ -26,18 +26,21 @@
 
 
         {% if listing.active %}
-        <div class="bid-form">
-            <form action="" method="POST">{% csrf_token %}
-                {{bid_form}}
-                <input type="submit" value="Bid" class="btn btn-primary">
-            </form>
-        </div>
+            {% if bid_form and not IS_USER %}
+            <div class="bid-form">
+                <form action="" method="POST">{% csrf_token %}
+                    {{bid_form}}
+                    <input type="submit" value="Bid" class="btn btn-primary">
+                </form>
+            </div>
+            {% endif %}
         
         <div class="bids">
             <div class="current-bid">
                 <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
                 <div>Current winner: {{active_bid.user}}</div>
                 
+
                 {% if IS_USER %}
                 <form action="{% url 'listing' listing.id %}" method="POST">{% csrf_token %}
                     <input type="submit" value="Close" name="close">
