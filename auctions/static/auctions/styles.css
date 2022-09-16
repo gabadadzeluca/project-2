@@ -2,6 +2,7 @@ body {
   padding: 10px;
   margin-left: 10%;
   margin-right: 10%;
+  font-family: Tahoma;
 }
 
 .box {
@@ -19,7 +20,7 @@ body {
   color: rgb(0, 0, 0);
 }
 .box img:hover {
-  border: 1px solid rgb(16, 12, 87);
+  border: 1px solid white;
 }
 
 .item-listing {
@@ -39,7 +40,7 @@ body {
   color: black;
 }
 .item-listing img:hover {
-  border: 1px solid black;
+  border: 1px solid white;
 }
 
 form {
@@ -130,4 +131,14 @@ form textarea {
 .bid-form input[type=submit] {
   margin-bottom: 5px;
   width: auto;
+}
+
+.category-list {
+  font-size: 20px;
+}
+.category-list ul {
+  list-style: none;
+}
+.category-list a {
+  text-decoration: none;
 }/*# sourceMappingURL=styles.css.map */

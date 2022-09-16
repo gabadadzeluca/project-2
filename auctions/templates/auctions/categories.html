@@ -5,7 +5,7 @@
 
 {% block body %}
     
-    <div>
+    <div class="category-list">
         <ul>
             {% for category in categories %}
             <li><a href="{% url 'category' category.id %}">{{category.category.title}}</a></li>
