@@ -35,23 +35,27 @@
             </div>
             {% endif %}
         
-        <div class="bids">
-            <div class="current-bid">
-                <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
-                <div>Current winner: {{active_bid.user}}</div>
-                
+            <div class="bids">
+                <div class="current-bid">
+                    <div><h4>Active Bid: {{active_bid.bid}}$</h4></div>
+                    <div>Current winner: {{active_bid.user}}</div>
+                    {% if IS_USER %}
+                    <form action="{% url 'listing' listing.id %}" method="POST">{% csrf_token %}
+                        <input type="submit" value="Close" name="close">
+                    </form>
+                    {% endif %}
+                </div>
 
-                {% if IS_USER %}
-                <form action="{% url 'listing' listing.id %}" method="POST">{% csrf_token %}
-                    <input type="submit" value="Close" name="close">
-                </form>
-                {% endif %}
-            </div>
-
-        {% else %}
-            <div>Auction was won by {{winner_bid.user}} for {{winner_bid.bid}}$</div>
+        {% elif active_bid %}
+            <div class="alert alert-primary" style="width:80%;"><h4>Auction was won by <i>{{active_bid.user}}</i> for <i>{{active_bid.bid}}$</i></h4></div><br>
         {% endif %}
-        <h4>Bids:</h4>
+        
+        {% if bids %}
+            <h4>Bids:</h4>
+        {%else%}
+            <h4 class="alert alert-primary" style="width:80%;">No Bids...</h4>
+        {%endif%}
+
         {% for bid in bids %}
             <div>
                 <span class="time-stamp"> {{bid.time}}</span>
