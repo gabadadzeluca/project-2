@@ -109,39 +109,38 @@ def listing(request, listing_id):
     comments = Comments.objects.filter(post = listing)
     
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
-
+    checkbox = ""
     # Variable to access the owner of the listing
     IS_USER = False
     if request.user == listing.user:
             IS_USER = True
-
-    print("bids: ", bids) #test
     if request.user.is_authenticated:
-        #if request.user == listing.user:
-            #IS_USER = True
         if IS_USER:
-            return render(request, "auctions/listing.html",{
-                    "listing": listing,
-                    "comment_form":CommentForm(),
-                    "comments": comments,
-                    "bids": bids,
-                    "bid_form": Bidform(),
-                    "IS_USER": IS_USER,
-                })
-        checkbox = request.POST.get("close")
-        if checkbox == "Close": 
-            # Ability to close the listing
-            listing.active = False           
-            listing.save()
-            return render(request, "auctions/listing.html",{
+            
+            checkbox = request.POST.get("close")
+            
+
+            if checkbox == "Close":
+                print(listing, "CLOSED")
+                listing.active = False
+                listing.save()
+            return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "comment_form":CommentForm(),
                 "comments": comments,
                 "bids": bids,
                 "bid_form": Bidform(),
-                
-            })
-        if (request.method == "POST" and listing.active is True):  
+                "IS_USER": IS_USER,
+
+            })           
+                # CODE ABOVE WORKS
+                #  CHANGE LISTING.HTML IF USER CONDITION TO SEE THE BUTTON
+
+            
+
+        
+        
+        if (request.method == "POST"):  
             #comment form and bidding form
             comment_form = CommentForm(request.POST)     
             bid_form = Bidform(request.POST)
@@ -166,7 +165,7 @@ def listing(request, listing_id):
                         "comments": comments,
                         "bids": bids,
                         "bid_form": Bidform(),
-
+                        "IS_USER": IS_USER,
 
                     })
             # IF FORM'S VALID
@@ -184,10 +183,7 @@ def listing(request, listing_id):
         "comments": comments,
         "bids": bids,
         "bid_form": Bidform(),
-
         #"active_bid": active_bid
-        
-        
     })
 
     else: #if user's not logged in
