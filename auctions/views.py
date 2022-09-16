@@ -110,6 +110,12 @@ def listing(request, listing_id):
     
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
     checkbox = ""
+
+    if len(bids) > 0:
+        active_bid = bids[0]
+    else:
+        active_bid = None
+
     # Variable to access the owner of the listing
     IS_USER = False
     if request.user == listing.user:
@@ -121,7 +127,6 @@ def listing(request, listing_id):
             
 
             if checkbox == "Close":
-                print(listing, "CLOSED")
                 listing.active = False
                 listing.save()
             return render(request, "auctions/listing.html", {
@@ -131,13 +136,9 @@ def listing(request, listing_id):
                 "bids": bids,
                 "bid_form": Bidform(),
                 "IS_USER": IS_USER,
+                "active_bid": active_bid,
 
-            })           
-                # CODE ABOVE WORKS
-                #  CHANGE LISTING.HTML IF USER CONDITION TO SEE THE BUTTON
-
-            
-
+            })  
         
         
         if (request.method == "POST"):  
@@ -146,17 +147,23 @@ def listing(request, listing_id):
             bid_form = Bidform(request.POST)
             
             if bid_form.is_valid():
+                bid_list = []
                 try:
-
+                    
                     instance = bid_form.save(commit=False)
                     instance.user = request.user
                     if instance.bid < listing.price:
                         raise ValidationError("Price isn't valid")
+                    for bid in bids:
+                        bid_list.append(bid)
+                        if instance.bid <= bid.bid:
+                            invalid_bid_message = "Bid must be higher than any other bid!"
+                            raise ValidationError("Bid must be higher than older bids")
                     instance.post = listing
                     instance.save()
-                    print(instance.bid)
-                    
                     return HttpResponseRedirect(reverse('index'))
+                    
+                
                 except ValidationError:
                     return render(request, "auctions/listing.html", {
                         "message": invalid_bid_message,
@@ -166,9 +173,9 @@ def listing(request, listing_id):
                         "bids": bids,
                         "bid_form": Bidform(),
                         "IS_USER": IS_USER,
-
+                        "active_bid":  active_bid,
                     })
-            # IF FORM'S VALID
+            # IF COMMENT FORM'S VALID
             if comment_form.is_valid(): 
                 instance = comment_form.save(commit=False)
                 instance.user = request.user
@@ -176,14 +183,13 @@ def listing(request, listing_id):
                 instance.save()
                 return HttpResponseRedirect(reverse('index'))
 
-        # IF LISTING IS NOT ACTIVE
         return render(request, "auctions/listing.html",{
         "listing": listing,
         "comment_form":CommentForm(),
         "comments": comments,
         "bids": bids,
         "bid_form": Bidform(),
-        #"active_bid": active_bid
+        "active_bid":  active_bid,
     })
 
     else: #if user's not logged in
@@ -191,6 +197,7 @@ def listing(request, listing_id):
             "listing": listing,
             "comments": comments,
             "bids": bids,
+            "active_bid": active_bid,
            
 
         })
