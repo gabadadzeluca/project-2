@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block title%}
+    Wishlist
+{% endblock %}
+{% block body %}
+    {% for item in wishlist%}
+        <div class="box">
+            <a href="{% url 'listing' item.post.id %}">
+                <div>{{item.post.title}}</div>
+                {% if item.post.image %}
+                    <div><img class="img-listing-page" src="{{item.post.image}}" alt="{{item.post.title}}"></div>
+                {% else %}
+                    <div><img class="img-listing-page" src="https://www.cort.com/assets/images/no-image.png" alt="Image Not Found"></div>
+                {% endif %}
+
+                {% if item.post.active %}
+                    <div>Status: Active</div>
+                {% else %}
+                    <div>Status: Inactive</div>
+                {% endif %}
+                <div>Starting Bid: {{item.post.price}}$</div>
+            </a>
+        </div>
+    {% endfor %}
+ 
+        
+{% endblock %}

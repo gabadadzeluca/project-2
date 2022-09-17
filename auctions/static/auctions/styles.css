@@ -2,6 +2,7 @@ body {
   padding: 10px;
   margin-left: 10%;
   margin-right: 10%;
+  font-family: Tahoma;
 }
 
 .box {
@@ -19,7 +20,27 @@ body {
   color: rgb(0, 0, 0);
 }
 .box img:hover {
-  border: 1px solid rgb(16, 12, 87);
+  border: 1px solid white;
+}
+
+.item-listing {
+  margin: 60px 0 50px 0;
+  font-weight: 400;
+  font-size: 20px;
+  background-color: #f2ebeb;
+  padding: 20px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  border: 2px solid rgb(177, 177, 177);
+  border-radius: 10px;
+}
+.item-listing a, .item-listing a:hover {
+  text-decoration: none;
+  color: black;
+}
+.item-listing img:hover {
+  border: 1px solid white;
 }
 
 form {
@@ -51,19 +72,6 @@ form textarea {
   color: dimgrey;
 }
 
-.item-listing {
-  margin: 60px 0 50px 0;
-  font-weight: 400;
-  font-size: 20px;
-  background-color: #f2ebeb;
-  padding: 20px;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
-  border: 2px solid rgb(177, 177, 177);
-  border-radius: 10px;
-}
-
 .comments {
   border-radius: 10px;
   padding: 10px;
@@ -80,7 +88,7 @@ form textarea {
   color: white;
   font-weight: 400;
   font-size: 16px;
-  border: 2px solid rgb(179, 171, 171);
+  border: 2px solid rgb(185, 185, 185);
   border-radius: 5px;
   padding: 5px;
 }
@@ -98,6 +106,15 @@ form textarea {
   margin: 50px 0 200px 0;
   width: 80%;
 }
+.bids .current-bid input[name=close] {
+  background-color: #24a0ed;
+  color: white;
+  font-weight: 400;
+  font-size: 16px;
+  border: 2px solid rgb(179, 171, 171);
+  border-radius: 5px;
+  padding: 5px;
+}
 
 .bid-form {
   font-size: 20px;
@@ -114,4 +131,23 @@ form textarea {
 .bid-form input[type=submit] {
   margin-bottom: 5px;
   width: auto;
+}
+
+.wishlist-form input {
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px 5px 10px;
+  margin: 10px;
+  border: 1px solid rgb(185, 185, 185);
+}
+
+.category-list {
+  font-size: 20px;
+}
+.category-list ul {
+  list-style: none;
+}
+.category-list a {
+  text-decoration: none;
 }/*# sourceMappingURL=styles.css.map */

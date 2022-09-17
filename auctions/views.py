@@ -6,15 +6,22 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comments, Bids
+from .models import User, Listing, Comments, Bids, Categories, Wishlist
 from .forms import ListingForm, CommentForm, Bidform
 
 
+# Incative listings page
+def inactive(request):
+    listings = Listing.objects.order_by('-pk')
+    return render(request, "auctions/inactive.html",{
+        "listings":listings,
+
+    })
 
 def index(request):
-    listing_list = Listing.objects.order_by('-pk')
+    listings = Listing.objects.order_by('-pk')
     return render(request, "auctions/index.html",{
-        "listings":listing_list,
+        "listings":listings,
 
     })
 
@@ -74,7 +81,6 @@ def register(request):
 @login_required
 def create(request):
     invalid_price_message = "Invalid Price"
-    success_message = "Successfully Posted Listing"
     try:
         if request.method == "POST":
             form = ListingForm(request.POST)
@@ -97,34 +103,71 @@ def create(request):
 
 
 def listing(request, listing_id):
-    
+   
     listing = Listing.objects.get(id = listing_id)
     bids = Bids.objects.filter(post = listing).order_by('-bid')
-    comments = Comments.objects.filter(post = listing)
+    comments = Comments.objects.filter(post = listing).order_by('-time')
+
+
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
+    checkbox = ""
 
+    if len(bids) > 0:
+        active_bid = bids[0]
+    else:
+        active_bid = None
 
-  
+    # Variable to access the owner of the listing
+    IS_USER = False
+    if request.user == listing.user:
+            IS_USER = True
     if request.user.is_authenticated:
+        # Adding item to the wishlist
+        add_wishlist = request.POST.get("wishlist")
+        if add_wishlist == "Add To Wishlist":
+            add_wishlist = Wishlist.objects.update_or_create(user=request.user, post=listing)
+            return HttpResponseRedirect(reverse('index'))
+        # CLOSING THE LISTING
+        if IS_USER:
+            checkbox = request.POST.get("close")
+            if checkbox == "Close":
+                listing.active = False
+                listing.save()
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+                "comment_form":CommentForm(),
+                "comments": comments,
+                "bids": bids,
+                "bid_form": Bidform(),
+                "IS_USER": IS_USER,
+                "active_bid": active_bid,
+
+            })  
         
-        if request.method == "POST":  
-            
+        
+        if (request.method == "POST"):  
             #comment form and bidding form
             comment_form = CommentForm(request.POST)     
             bid_form = Bidform(request.POST)
-            
-            if bid_form.is_valid():
-                try:
 
+            if bid_form.is_valid():
+                bid_list = []
+                try:
+                    
                     instance = bid_form.save(commit=False)
                     instance.user = request.user
                     if instance.bid < listing.price:
                         raise ValidationError("Price isn't valid")
+                    for bid in bids:
+                        bid_list.append(bid)
+                        if instance.bid <= bid.bid:
+                            invalid_bid_message = "Bid must be higher than any other bid!"
+                            raise ValidationError("Bid must be higher than older bids")
                     instance.post = listing
                     instance.save()
-                    print(instance.bid)
-                    
                     return HttpResponseRedirect(reverse('index'))
+                    
+                
                 except ValidationError:
                     return render(request, "auctions/listing.html", {
                         "message": invalid_bid_message,
@@ -133,9 +176,10 @@ def listing(request, listing_id):
                         "comments": comments,
                         "bids": bids,
                         "bid_form": Bidform(),
-
+                        "IS_USER": IS_USER,
+                        "active_bid":  active_bid,
                     })
-
+            # IF COMMENT FORM'S VALID
             if comment_form.is_valid(): 
                 instance = comment_form.save(commit=False)
                 instance.user = request.user
@@ -149,8 +193,7 @@ def listing(request, listing_id):
         "comments": comments,
         "bids": bids,
         "bid_form": Bidform(),
-        #"active_bid": active_bid
-        
+        "active_bid":  active_bid,
     })
 
     else: #if user's not logged in
@@ -158,4 +201,33 @@ def listing(request, listing_id):
             "listing": listing,
             "comments": comments,
             "bids": bids,
+            "active_bid": active_bid,
+           
+
         })
+
+
+def categories(request):
+    categories = Categories.objects.all().distinct().order_by('category')
+    return render(request, "auctions/categories.html",{
+        "categories": categories,
+
+    })
+
+def category(request, category_id):
+    category = Categories.objects.get(id = category_id)
+    listings = Listing.objects.filter(category = category)
+
+    return render(request, "auctions/category.html", {
+        "category": category,
+        "listings": listings,
+
+    })
+
+def wishlist(request):
+    wishlist = Wishlist.objects.filter(user = request.user)
+    return render(request, "auctions/wishlist.html", {
+        "wishlist": wishlist,
+        "user": request.user,
+
+    })
