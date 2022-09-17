@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import User, Listing, Comments, Bids, Categories
+from .models import User, Listing, Comments, Bids, Categories, Wishlist
 from .forms import ListingForm, CommentForm, Bidform
 
 
@@ -106,8 +106,9 @@ def listing(request, listing_id):
    
     listing = Listing.objects.get(id = listing_id)
     bids = Bids.objects.filter(post = listing).order_by('-bid')
-    comments = Comments.objects.filter(post = listing)
-    
+    comments = Comments.objects.filter(post = listing).order_by('-time')
+
+
     invalid_bid_message = "The bid must be higher or equal to it's starting bid!"
     checkbox = ""
 
@@ -121,11 +122,14 @@ def listing(request, listing_id):
     if request.user == listing.user:
             IS_USER = True
     if request.user.is_authenticated:
+        # Adding item to the wishlist
+        add_wishlist = request.POST.get("wishlist")
+        if add_wishlist == "Add To Wishlist":
+            add_wishlist = Wishlist.objects.update_or_create(user=request.user, post=listing)
+            return HttpResponseRedirect(reverse('index'))
+        # CLOSING THE LISTING
         if IS_USER:
-            
             checkbox = request.POST.get("close")
-            
-
             if checkbox == "Close":
                 listing.active = False
                 listing.save()
@@ -145,7 +149,7 @@ def listing(request, listing_id):
             #comment form and bidding form
             comment_form = CommentForm(request.POST)     
             bid_form = Bidform(request.POST)
-            
+
             if bid_form.is_valid():
                 bid_list = []
                 try:
@@ -217,5 +221,13 @@ def category(request, category_id):
     return render(request, "auctions/category.html", {
         "category": category,
         "listings": listings,
+
+    })
+
+def wishlist(request):
+    wishlist = Wishlist.objects.filter(user = request.user)
+    return render(request, "auctions/wishlist.html", {
+        "wishlist": wishlist,
+        "user": request.user,
 
     })

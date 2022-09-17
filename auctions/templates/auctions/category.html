@@ -15,13 +15,13 @@
                 <div class="item-listing">
                     <a href="{% url 'listing' listing.id %}">
                         <div><h4>Item: {{listing.title}}</h4></div>
-                        <div>Category: {{category.category.title}}</div>
-                        <div>Description: {{listing.content}}</div>
                         {% if listing.image %}
                             <div><img src="{{listing.image}}" alt="{{listing.title}}" class="img-full-page"></div>
                         {% else %}
                             <div><img src="https://www.cort.com/assets/images/no-image.png" alt="img not found" class="img-full-page"></div>
                         {% endif %}
+                        <div>Category: {{category.category.title}}</div>
+                        <div>Description: {{listing.content}}</div>
                         <div><span class="time-stamp">Posted on {{listing.time}}</span></div>
                         <div>Starting Bid: <b>{{listing.price}} $</b></div>
                         <div>posted by: <b>{{listing.user}}</b></div>
